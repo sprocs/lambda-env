@@ -1,5 +1,5 @@
 const { SSM } = require('aws-sdk')
-const { configWithLocal } = require('./amplifyConfig')
+const { configWithLocal } = require('./amplify')
 const ssmClient = new SSM(configWithLocal())
 
 const getAllSSMParametersByPath = async (path, NextToken, parameters = {}) => {
@@ -48,7 +48,7 @@ const loadSSMParameters = async () => {
     return Promise.resolve(ssmParameters)
   } else {
     try {
-      const ssmPath = `/${process.env.APP}/${
+      const ssmPath = `/sprocs/${process.env.APP}/${
         !process.env.ENV || process.env.ENV === 'NONE' ? 'dev' : process.env.ENV
       }`
       console.debug('Loading SSM parameters for', ssmPath)

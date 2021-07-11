@@ -2,7 +2,7 @@ const {
   envTableName,
   dynamoDBConfigWithLocal,
   configWithLocal,
-} = require('./amplifyConfig')
+} = require('./amplify')
 const AWS = require('aws-sdk')
 
 const documentClient = new AWS.DynamoDB.DocumentClient(
