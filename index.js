@@ -16,6 +16,8 @@ const { loadSSMParameters, getAllSSMParametersByPath } = require('./ssm')
 
 const { documentClient, ddbAll } = require('./dynamodb')
 
+const { safeCompare } = require('./helpers')
+
 module.exports = {
   // apiGateway
   mapDynamoDbEventToHttpRequest,
@@ -33,4 +35,6 @@ module.exports = {
   // dynamodb
   documentClient,
   ddbAll,
+  // helpers
+  safeCompare,
 }
