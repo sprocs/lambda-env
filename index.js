@@ -1,6 +1,7 @@
 const {
   mapDynamoDbEventToHttpRequest,
   mapResponseToDynamoDb,
+  handleApiError,
 } = require('./apiGateway')
 
 const {
@@ -18,10 +19,21 @@ const { documentClient, ddbAll } = require('./dynamodb')
 
 const { safeCompare } = require('./helpers')
 
+const {
+  getPassportStrategy,
+  createPassportStrategy,
+  handlePassportCallback,
+  appUserRoleArn,
+  appAdminRoleArn,
+  getRoleFromUserGroups,
+  isSAMLSetup,
+} = require('./saml')
+
 module.exports = {
   // apiGateway
   mapDynamoDbEventToHttpRequest,
   mapResponseToDynamoDb,
+  handleApiError,
   // amplify
   configWithLocal,
   envWithLocal,
@@ -37,4 +49,12 @@ module.exports = {
   ddbAll,
   // helpers
   safeCompare,
+  // SAML
+  isSAMLSetup,
+  getPassportStrategy,
+  createPassportStrategy,
+  handlePassportCallback,
+  appUserRoleArn,
+  appAdminRoleArn,
+  getRoleFromUserGroups,
 }

@@ -27,7 +27,7 @@ const mapDynamoDbEventToHttpRequest = ({ event }) => {
   return {
     method,
     path,
-    headers: {}
+    headers: {},
   }
 }
 
@@ -35,17 +35,37 @@ const mapResponseToDynamoDb = ({
   statusCode,
   body,
   headers,
-  isBase64Encoded
+  isBase64Encoded,
 }) => {
   return {
     statusCode,
     body,
     headers,
-    isBase64Encoded
+    isBase64Encoded,
+  }
+}
+
+const handleApiError = (err, res) => {
+  const { statusCode, code, status, message, inner } = err
+  let serverStatus = statusCode || status
+  if (serverStatus) {
+    res.status(serverStatus).json({
+      error: true,
+      statusCode: serverStatus,
+      message: message || inner?.message,
+    })
+  } else {
+    // Unhandled error
+    res.status(500).json({
+      error: true,
+      statusCode: 500,
+      message: 'API exception',
+    })
   }
 }
 
 module.exports = {
   mapDynamoDbEventToHttpRequest,
-  mapResponseToDynamoDb
+  mapResponseToDynamoDb,
+  handleApiError,
 }
