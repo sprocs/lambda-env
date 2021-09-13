@@ -76,6 +76,7 @@ const handlePassportCallback = (req, res, next) => {
 
     console.log(user)
     console.log('got SAML user', user.nameID, user.email, user.groups)
+    console.log('got RelayState', req.body.RelayState)
 
     const userRole = getRoleFromUserAttributes(user)
     if (!userRole) {
@@ -123,26 +124,40 @@ const handlePassportCallback = (req, res, next) => {
       const signedStsUrl = `https://${host}${path}`
       const stsB64 = Buffer.from(signedStsUrl).toString('base64')
 
-      let parsedAppDomain = null
-      if (process.env.APP_DOMAIN) {
+      let parsedRedirectDomain = null
+      const relayStateDomain = req.body.RelayState
+      if (relayStateDomain) {
         try {
-          parsedAppDomain = new URL(process.env.APP_DOMAIN)
+          parsedRedirectDomain = new URL(relayStateDomain)
+          console.debug('parsed RelayState domain', relayStateDomain)
+        } catch (e) {
+          console.error('failed to parse RelayState, skipping', e)
+        }
+      }
+
+      if (!parsedRedirectDomain && process.env.APP_DOMAIN) {
+        try {
+          parsedRedirectDomain = new URL(process.env.APP_DOMAIN)
+          console.debug('parsed APP_DOMAIN', process.env.APP_DOMAIN)
         } catch (e) {
           console.error('failed to parse APP_DOMAIN, skipping', e)
         }
       }
 
-      if (parsedAppDomain) {
-        const appSpawnPath = `https://${parsedAppDomain.host}/spawn`
-        console.log('redirecting to APP_DOMAIN', appSpawnPath)
-        res.redirect(`${appSpawnPath}?sts=${stsB64}`)
+      let appSpawnPath = null
+      if (parsedRedirectDomain) {
+        appSpawnPath = `https://${parsedRedirectDomain.host}`
+        console.log('redirecting to', appSpawnPath)
+        res.redirect(`${appSpawnPath}?spawnStsUrl=${stsB64}`)
       } else if (process.env.AMPLIFY_APP_ID) {
-        const appStartPath = `https://${process.env.ENV}.${process.env.AMPLIFY_APP_ID}.amplifyapps.com/spawn`
+        appSpawnPath = `https://${process.env.AWS_BRANCH || process.env.ENV}.${
+          process.env.AMPLIFY_APP_ID
+        }.amplifyapps.com/spawn`
         console.log(
-          'redirecting to AMPLIFY_APP_ID with default ENV',
+          'redirecting to AMPLIFY_APP_ID with most recent AWS_BRANCH or default ENV',
           appSpawnPath,
         )
-        res.redirect(`${appSpawnPath}?sts=${stsB64}`)
+        res.redirect(`${appSpawnPath}?spawnStsUrl=${stsB64}`)
       } else {
         res.json({
           stsUrl: signedStsUrl,
@@ -220,7 +235,10 @@ const isSAMLSetup = () => {
     process.env.SAML_CERT &&
     process.env.SAML_ENTRYPOINT &&
     process.env.SAML_ISSUER &&
-    process.env.SAML_AUDIENCE
+    process.env.SAML_AUDIENCE &&
+    process.env.ENV &&
+    process.env.APP &&
+    process.env.ACCOUNT_ID
   )
 }
 

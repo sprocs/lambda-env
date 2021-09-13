@@ -1,15 +1,24 @@
+// use 'fake' region consistent with default in amplify local mocks
+const isLocalEnv = () => {
+  return process.env.REGION && process.env.REGION.match(/fake/)
+}
+
+if (isLocalEnv()) {
+  console.debug('Detected local environment, loading AWS config')
+  process.env.AWS_SDK_LOAD_CONFIG = true
+}
+
 const { SharedIniFileCredentials, SSM } = require('aws-sdk')
 const crypto = require('crypto')
 
 const configWithLocal = () => {
-  if (process.env.REGION && process.env.REGION.match(/fake/)) {
+  if (isLocalEnv()) {
     // Config for testing locally with amplify mock
     const credentials = new SharedIniFileCredentials({
       profile: process.env.AWS_PROFILE || 'sprocs-amplify',
     })
     return {
       credentials,
-      region: 'us-east-2',
     }
   } else {
     return {}
@@ -21,7 +30,7 @@ const envWithLocal = () =>
   process.env.ENV === 'NONE' ? 'dev' : process.env.ENV
 
 const dynamoDBConfigWithLocal = () => {
-  if (process.env.REGION && process.env.REGION.match(/fake/)) {
+  if (isLocalEnv()) {
     return {
       endpoint: 'http://localhost:62224',
       region: 'us-fake-1',
