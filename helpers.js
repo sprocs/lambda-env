@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+const ULID = require('ulid')
 
 const safeCompare = (a, b) => {
   return !!(
@@ -11,6 +12,9 @@ const safeCompare = (a, b) => {
   )
 }
 
+const generateUUID = () => ULID.ulid()
+
 module.exports = {
   safeCompare,
+  generateUUID,
 }

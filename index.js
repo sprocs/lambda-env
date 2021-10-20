@@ -17,7 +17,7 @@ const { loadSSMParameters, getAllSSMParametersByPath } = require('./ssm')
 
 const { documentClient, ddbAll } = require('./dynamodb')
 
-const { safeCompare } = require('./helpers')
+const { safeCompare, generateUUID } = require('./helpers')
 
 const {
   getPassportStrategy,
@@ -49,6 +49,7 @@ module.exports = {
   ddbAll,
   // helpers
   safeCompare,
+  generateUUID,
   // SAML
   isSAMLSetup,
   getPassportStrategy,

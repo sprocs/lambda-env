@@ -43,7 +43,7 @@ const dynamoDBConfigWithLocal = () => {
 }
 
 // get tables in AppSync table name format
-const envTableName = (tableName) => {
+const envAppSyncTableName = (tableName) => {
   if (process.env.ENV && process.env.ENV === 'NONE') {
     return `${tableName}Table`
   } else {
@@ -70,7 +70,7 @@ module.exports = {
   configWithLocal,
   envWithLocal,
   dynamoDBConfigWithLocal,
-  envTableName,
+  envAppSyncTableName,
   jwtSecretKey,
   isTestEnv,
 }
