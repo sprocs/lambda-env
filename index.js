@@ -23,9 +23,9 @@ const {
 } = require('./dynamodb')
 
 const {
-  isBlank,
-  objectSubset,
-  isValidId,
+  formatE164,
+  parsePhoneNumber,
+  isValidPhoneNumber,
 } = require('./phone')
 
 const {
@@ -83,7 +83,7 @@ module.exports = {
   appAdminRoleArn,
   getRoleFromUserGroups,
   // phone
-  isBlank,
-  objectSubset,
-  isValidId,
+  formatE164,
+  parsePhoneNumber,
+  isValidPhoneNumber,
 }
