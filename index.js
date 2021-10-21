@@ -15,9 +15,28 @@ const {
 
 const { loadSSMParameters, getAllSSMParametersByPath } = require('./ssm')
 
-const { documentClient, ddbAll } = require('./dynamodb')
+const {
+  ddbAll,
+  ddbUpdateExpression,
+  ddbUpdateAttributeValues,
+  documentClient,
+} = require('./dynamodb')
 
-const { safeCompare, generateUUID } = require('./helpers')
+const {
+  parseExtensionFromFilename,
+  isBlank,
+  objectSubset,
+  isValidId,
+} = require('./phone')
+
+const {
+  safeCompare,
+  generateUUID,
+  parseExtensionFromFilename,
+  isBlank,
+  objectSubset,
+  isValidId,
+} = require('./helpers')
 
 const {
   getPassportStrategy,
@@ -45,11 +64,17 @@ module.exports = {
   loadSSMParameters,
   getAllSSMParametersByPath,
   // dynamodb
-  documentClient,
   ddbAll,
+  ddbUpdateExpression,
+  ddbUpdateAttributeValues,
+  documentClient,
   // helpers
   safeCompare,
   generateUUID,
+  parseExtensionFromFilename,
+  isBlank,
+  objectSubset,
+  isValidId,
   // SAML
   isSAMLSetup,
   getPassportStrategy,
@@ -58,4 +83,9 @@ module.exports = {
   appUserRoleArn,
   appAdminRoleArn,
   getRoleFromUserGroups,
+  // phone
+  parseExtensionFromFilename,
+  isBlank,
+  objectSubset,
+  isValidId,
 }

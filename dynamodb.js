@@ -44,7 +44,34 @@ const ddbAll = async (
   })
 }
 
+const ddbUpdateExpression = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map((k) => `${k} = :${k}`).join(', ')
+  } else {
+    return Object.keys(obj)
+      .map((k) => `${k} = :${k}`)
+      .join(', ')
+  }
+}
+
+const ddbUpdateAttributeValues = (obj, keys) => {
+  let attrValues = {}
+  if (keys) {
+    keys.forEach((k) => {
+      attrValues[`:${k}`] = (obj[k] === undefined || obj[k] === null) ? '' : obj[k]
+    })
+  } else {
+    Object.entries(obj).forEach(([k, v]) => {
+      attrValues[`:${k}`] = (v === undefined || v === null) ? '' : v
+    })
+  }
+  return attrValues
+}
+
+
 module.exports = {
   ddbAll,
+  ddbUpdateExpression,
+  ddbUpdateAttributeValues,
   documentClient,
 }
