@@ -23,7 +23,6 @@ const {
 } = require('./dynamodb')
 
 const {
-  parseExtensionFromFilename,
   isBlank,
   objectSubset,
   isValidId,
@@ -84,7 +83,6 @@ module.exports = {
   appAdminRoleArn,
   getRoleFromUserGroups,
   // phone
-  parseExtensionFromFilename,
   isBlank,
   objectSubset,
   isValidId,
